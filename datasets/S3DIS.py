@@ -53,30 +53,22 @@ from utils.config import bcolors
 class S3DISDataset(PointCloudDataset):
     """Class to handle S3DIS dataset."""
 
-    def __init__(self, config, set='training', use_potentials=True, load_data=True):
+    def __init__(self, config, set='training', use_potentials=False, load_data=True):
         """
         This dataset is small enough to be stored in-memory, so load all point clouds here
         """
-        PointCloudDataset.__init__(self, 'S3DIS')
+        PointCloudDataset.__init__(self, 'bridgedata')
 
         ############
         # Parameters
         ############
 
         # Dict from labels to names
-        self.label_to_names = {0: 'ceiling',
-                               1: 'floor',
-                               2: 'wall',
-                               3: 'beam',
-                               4: 'column',
-                               5: 'window',
-                               6: 'door',
-                               7: 'chair',
-                               8: 'table',
-                               9: 'bookcase',
-                               10: 'sofa',
-                               11: 'board',
-                               12: 'clutter'}
+        self.label_to_names = {0: 'abutment',
+                               1: 'piers',
+                               2: 'deck',
+                               3: 'rails',
+                               4: 'background'}
 
         # Initialize a bunch of variables concerning class labels
         self.init_labels()
@@ -85,7 +77,7 @@ class S3DISDataset(PointCloudDataset):
         self.ignored_labels = np.array([])
 
         # Dataset folder
-        self.path = 'C:/SoftwareLab/KpConv2/Data/S3DIS/'
+        self.path = 'C:\SoftwareLab\KpConvv\KPConv-PyTorch\Data'
 
         # Type of task conducted on this dataset
         self.dataset_task = 'cloud_segmentation'
@@ -104,15 +96,15 @@ class S3DISDataset(PointCloudDataset):
         self.use_potentials = use_potentials
 
         # Path of the training files
-        self.train_path = 'original_ply'
+        self.train_path = 'bridgedata'
 
         # List of files to process
         ply_path = join(self.path, self.train_path)
 
         # Proportion of validation scenes
-        self.cloud_names = ['Area_1', 'Area_2', 'Area_3', 'Area_4', 'Area_5', 'Area_6']
-        self.all_splits = [0, 1, 2, 3, 4, 5]
-        self.validation_split = 4
+        self.cloud_names = ['bridgedata','bridgedata']
+        self.all_splits = [0,1]
+        self.validation_split = 1
 
         # Number of models used per epoch
         if self.set == 'training':
@@ -148,12 +140,13 @@ class S3DISDataset(PointCloudDataset):
             else:
                 raise ValueError('Unknown set for S3DIS data: ', self.set)
 
-        if self.set == 'training':
-            self.cloud_names = [f for i, f in enumerate(self.cloud_names)
-                                if self.all_splits[i] != self.validation_split]
-        elif self.set in ['validation', 'test', 'ERF']:
-            self.cloud_names = [f for i, f in enumerate(self.cloud_names)
-                                if self.all_splits[i] == self.validation_split]
+    
+            if self.set == 'training':
+                self.cloud_names = [f for i, f in enumerate(self.cloud_names)
+                                    if self.all_splits[i] != self.validation_split]
+            elif self.set in ['validation', 'test', 'ERF']:
+                self.cloud_names = [f for i, f in enumerate(self.cloud_names)
+                                    if self.all_splits[i] == self.validation_split]
 
         if 0 < self.config.first_subsampling_dl <= 0.01:
             raise ValueError('subsampling_parameter too low (should be over 1 cm')
@@ -168,7 +161,7 @@ class S3DISDataset(PointCloudDataset):
         self.validation_labels = []
 
         # Start loading
-        self.load_subsampled_clouds()
+        #self.load_subsampled_clouds()
 
         ############################
         # Batch selection parameters
