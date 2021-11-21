@@ -77,7 +77,7 @@ class S3DISDataset(PointCloudDataset):
         self.ignored_labels = np.array([])
 
         # Dataset folder
-        self.path = 'C:\SoftwareLab\KpConvv\KPConv-PyTorch\Data'
+        self.path = '..\Data'
 
         # Type of task conducted on this dataset
         self.dataset_task = 'cloud_segmentation'
