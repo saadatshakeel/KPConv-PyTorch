@@ -161,7 +161,7 @@ class S3DISDataset(PointCloudDataset):
         self.validation_labels = []
 
         # Start loading
-        #self.load_subsampled_clouds()
+        self.load_subsampled_clouds()
 
         ############################
         # Batch selection parameters
