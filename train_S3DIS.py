@@ -50,10 +50,10 @@ class S3DISConfig(Config):
     ####################
 
     # Dataset name
-    dataset = 'S3DIS'
+    dataset = 'Cambridge'
 
     # Number of classes in the dataset (This value is overwritten by dataset class when Initializating dataset).
-    num_classes = None
+    num_classes = 5
 
     # Type of task performed on this dataset (also overwritten)
     dataset_task = ''
@@ -143,7 +143,7 @@ class S3DISConfig(Config):
 
     # Choice of input features
     first_features_dim = 128
-    in_features_dim = 5
+    in_features_dim = 6
 
     # Can the network learn modulations
     modulated = False
@@ -165,7 +165,7 @@ class S3DISConfig(Config):
     #####################
 
     # Maximal number of epochs
-    max_epoch = 500
+    max_epoch = 30
 
     # Learning rate management
     learning_rate = 1e-2
@@ -174,13 +174,13 @@ class S3DISConfig(Config):
     grad_clip_norm = 100.0
 
     # Number of batch (decrease to reduce memory cost, but it should remain > 3 for stability)
-    batch_num = 6
+    batch_num = 3
 
     # Number of steps per epochs
-    epoch_steps = 500
+    epoch_steps = 30
 
     # Number of validation examples per epoch
-    validation_size = 50
+    validation_size = 1
 
     # Number of epoch between each checkpoint
     checkpoint_gap = 50
@@ -263,13 +263,13 @@ if __name__ == '__main__':
         config.load(os.path.join('results', previous_training_path))
         config.saving_path = None
 
-    # Get path from argument if given
+    #Get path from argument if given
     if len(sys.argv) > 1:
         config.saving_path = sys.argv[1]
 
     # Initialize datasets
-    training_dataset = S3DISDataset(config, set='training', use_potentials=True)
-    test_dataset = S3DISDataset(config, set='validation', use_potentials=True)
+    training_dataset = S3DISDataset(config, set='training', use_potentials=False)
+    test_dataset = S3DISDataset(config, set='validation', use_potentials=False)
 
     # Initialize samplers
     training_sampler = S3DISSampler(training_dataset)
